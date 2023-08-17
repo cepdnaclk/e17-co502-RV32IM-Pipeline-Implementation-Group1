@@ -1,7 +1,5 @@
 ___
-# DELETE THIS INSTRUCTIONS AND ADD A SHORT INTRODUCTION ABOUT YOUR PROJECT
+# RV32IM Pipelined CPU Implementation
 ___
-
-## Please refer the instructions in below URL:
-
-https://projects.ce.pdn.ac.lk/docs/how-to-add-a-project
+## Overview
+An in-order 5-stage pipelined CPU which implements the RV32I base instruction set and the M instruction set extension for multiplication/division operations as per the RISC-V ISA specification.
