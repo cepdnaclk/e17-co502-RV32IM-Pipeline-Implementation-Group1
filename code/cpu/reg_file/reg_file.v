@@ -5,6 +5,7 @@
 
 `timescale 1ns/100ps
 
+
 module reg_file (DATA_IN, DATA_OUT1, DATA_OUT2, IN_ADDR, OUT1_ADDR, OUT2_ADDR, WRITE_EN, CLK, RESET);
 
     // Define input/output ports
