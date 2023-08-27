@@ -26,17 +26,17 @@ module immediate_generation_unit (INSTRUCTION, SELECT, OUT);
     begin
         case (SELECT)
             3'b000:
-                OUT = U_IMM;
+                OUT <= #1 U_IMM;
             3'b001:
-                OUT = J_IMM;
+                OUT <= #1 J_IMM;
             3'b010:
-                OUT = I_IMM;
+                OUT <= #1 I_IMM;
             3'b011:
-                OUT = B_IMM;
+                OUT <= #1 B_IMM;
             3'b100:
-                OUT = S_IMM;
+                OUT <= #1 S_IMM;
             default:
-                OUT = 32'b0;
+                OUT <= #1 32'b0;
         endcase
     end
 
