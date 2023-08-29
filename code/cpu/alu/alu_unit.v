@@ -70,9 +70,11 @@ module alu_unit (DATA1, DATA2, SELECT, RESULT);
 
     // Multiply signed DATA1 by signed DATA2 and output the upper 32 bits of the result
     assign #2 MULH64 = $signed(DATA1) * $signed(DATA2); 
-    MULH = MULH64[63:32];
+    assign MULH = MULH64[63:32];
 
-    // Multiply unsigned DATA1 by unsigned DATA2 and output the upper 32 bits of the result
+    // Multiply unsigned DATA1 by unsign
+code/cpu/alu/alu_unit.v
+ed DATA2 and output the upper 32 bits of the result
     always @ (*)
     begin
         #2
