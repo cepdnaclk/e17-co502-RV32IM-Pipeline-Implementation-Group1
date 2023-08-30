@@ -1,15 +1,16 @@
 /*******************************/
 /*  RV32IM Pipeline - Group 1  */
-/*  Control Unit Module        */
+/*  Control Unit               */
 /*******************************/
 
 `timescale 1ns/100ps
 
 
 module control_unit (
-    INSTRUCTION, MEM_READ, MEM_WRITE, REG_WRITE_EN, 
-    WB_VALUE_SELECT, ALU_SELECT, OP1_SEL, OP2_SEL, 
-    BRANCH_CTRL, IMM_SELECT
+    INSTRUCTION, ALU_SELECT, REG_WRITE_EN, 
+    MEM_WRITE, MEM_READ, BRANCH_CTRL, 
+    IMM_SELECT, OP1_SEL, OP2_SEL, 
+    WB_VALUE_SELECT
 );
 
     // Define input/output ports
@@ -84,11 +85,11 @@ module control_unit (
 
     assign #1 ALU_SELECT[3] =
         (OPCODE === 7'b0110111) |       // LUI
-        (OPCODE === 7'b1100111) |       // JALR
         ({OPCODE, FUNCT7} === {7'b0110011, 7'b0000001});    // RV32M
 
     assign #1 ALU_SELECT[4] =
         (OPCODE === 7'b0110111) |       // LUI
+        (OPCODE === 7'b1100111) |       // JALR
         ({OPCODE, FUNCT3, FUNCT7} === {7'b0110011, 3'b000, 7'b0100000}) |   // SUB
         ({OPCODE, FUNCT3, FUNCT7} === {7'b0110011, 3'b101, 7'b0100000}) |   // SRA
         ({OPCODE, FUNCT3, FUNCT7} === {7'b0010011, 3'b101, 7'b0100000});    // SRAI

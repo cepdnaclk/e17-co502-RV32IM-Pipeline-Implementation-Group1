@@ -1,7 +1,7 @@
-/********************************************/
-/*  RV32IM Pipeline - Group 1               */
-/*  Immediate Generation Unit Module        */
-/********************************************/
+/*******************************/
+/*  RV32IM Pipeline - Group 1  */
+/*  Immediate Generation Unit  */
+/*******************************/
 
 `timescale 1ns/100ps
 
@@ -36,7 +36,7 @@ module immediate_generation_unit (INSTRUCTION, SELECT, OUT);
             3'b100:
                 OUT <= #1 S_IMM;
             default:
-                OUT <= #1 32'b0;
+                OUT <= #1 32'd0;
         endcase
     end
 

@@ -1,6 +1,6 @@
 /*******************************/
 /*  RV32IM Pipeline - Group 1  */
-/*  Register File Module       */
+/*  Register File              */
 /*******************************/
 
 `timescale 1ns/100ps
