@@ -27,7 +27,7 @@ module pr_id_ex (
     input [31:0] ID_PC, ID_REG_DATA1, ID_REG_DATA2, ID_IMMEDIATE;
     input [4:0] ID_REG_WRITE_ADDR;
     input ID_REG_WRITE_EN, ID_OPERAND1_SELECT, ID_OPERAND2_SELECT;
-    input [5:0] ID_ALU_SELECT;
+    input [4:0] ID_ALU_SELECT;
     input [3:0] ID_DATA_MEM_READ, ID_BRANCH_CTRL;
     input [2:0] ID_DATA_MEM_WRITE;
     input [1:0] ID_WB_VALUE_SELECT;
@@ -35,7 +35,7 @@ module pr_id_ex (
     output reg [31:0] EX_PC, EX_REG_DATA1, EX_REG_DATA2, EX_IMMEDIATE;
     output reg [4:0] EX_REG_WRITE_ADDR;
     output reg EX_REG_WRITE_EN, EX_OPERAND1_SELECT, EX_OPERAND2_SELECT;
-    output reg [5:0] EX_ALU_SELECT;
+    output reg [4:0] EX_ALU_SELECT;
     output reg [3:0] EX_DATA_MEM_READ, EX_BRANCH_CTRL;
     output reg [2:0] EX_DATA_MEM_WRITE;
     output reg [1:0] EX_WB_VALUE_SELECT;
