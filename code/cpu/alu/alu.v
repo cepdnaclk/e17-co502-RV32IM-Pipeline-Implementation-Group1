@@ -107,7 +107,7 @@ module alu (DATA1, DATA2, RESULT, SELECT);
 
 
     /* Send out correct result based on SELECT */
-    always @(*) 
+    always @ (*) 
     begin
         casez (SELECT)
             // RV32I
@@ -137,7 +137,6 @@ module alu (DATA1, DATA2, RESULT, SELECT);
                 RESULT = FWD;
 
             
-
             // RV32M
             5'b01000:
                 RESULT = MUL;
