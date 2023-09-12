@@ -1,7 +1,7 @@
-/********************************************/
-/*  RV32IM Pipeline - Group 1               */
-/*  Beanch Control Unit Module              */
-/********************************************/
+/*******************************/
+/*  RV32IM Pipeline - Group 1  */
+/*  Branch Control Unit        */
+/*******************************/
 
 `timescale 1ns/100ps
 
@@ -25,33 +25,32 @@ module branch_control_unit (DATA1, DATA2, SELECT, PC_MUX_OUT);
 
     always @ (*)
     begin
-        #1  // delay of 1 time unit 
         if (SELECT[3])      // for branch/jump instruction
         begin
             case (SELECT[2:0])
                 // for JAL and JALR
                 3'b010:
-                    PC_MUX_OUT = 1'b1; 
+                    PC_MUX_OUT <= #1 1'b1; 
                 // for BEQ
                 3'b000:
-                    PC_MUX_OUT = BEQ;
+                    PC_MUX_OUT <= #1 BEQ;
                 // for BNE
                 3'b001:
-                    PC_MUX_OUT = BNE;
+                    PC_MUX_OUT <= #1 BNE;
                 // for BLT
                 3'b100:
-                    PC_MUX_OUT = BLT;
+                    PC_MUX_OUT <= #1 BLT;
                 // for BGE
                 3'b101:
-                    PC_MUX_OUT = BGE;
+                    PC_MUX_OUT <= #1 BGE;
                 // for BLTU
                 3'b110:
-                    PC_MUX_OUT = BLTU; 
+                    PC_MUX_OUT <= #1 BLTU; 
                 // for BGEU
                 3'b111:
-                    PC_MUX_OUT = BGEU; 
+                    PC_MUX_OUT <= #1 BGEU; 
                 default:
-                    PC_MUX_OUT = 1'b0;
+                    PC_MUX_OUT <= #1 1'b0;
             endcase
         end
         else
