@@ -36,7 +36,6 @@ module pr_ex_mem (
 
     always @ (posedge CLK)
     begin
-        
         if (RESET == 1'b1)
         begin
             MEM_PC <= #0.1 32'd0;
