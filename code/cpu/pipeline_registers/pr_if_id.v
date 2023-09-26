@@ -20,8 +20,8 @@ module pr_if_id (
     begin
         if (RESET == 1'b1)
         begin
-            ID_PC <= #0.1 32'b0;
-            ID_INSTRUCTION <= #0.1 32'b0;
+            ID_PC <= #0.1 32'd0;
+            ID_INSTRUCTION <= #0.1 32'd0;
         end
         else
         begin
