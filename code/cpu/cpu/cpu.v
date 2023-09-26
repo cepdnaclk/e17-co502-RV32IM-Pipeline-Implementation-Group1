@@ -93,6 +93,10 @@ module cpu (
 
     plus_4_adder PC_ADD(MEM_PC, MEM_PC_PLUS_4);
 
+    assign DATA_MEM_ADDR =  MEM_ALU_OUT;
+    assign DATA_MEM_WRITE_DATA =  MEM_REG_DATA2;
+    assign DATA_MEM_READ =  MEM_DATA_MEM_READ;
+    assign DATA_MEM_WRITE =  MEM_DATA_MEM_WRITE;
 
 
     /****************************************** TODO: MEM / WB ******************************************/
