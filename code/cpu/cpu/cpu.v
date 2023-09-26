@@ -86,18 +86,26 @@ module cpu (
 
 
     /****************************************** TODO: EX / MEM ******************************************/
+    pr_ex_mem PIPELINE_REG_EX_MEM( CLK, RESET, EX_PC, EX_ALU_OUT, EX_REG_DATA2, EX_REG_WRITE_ADDR, EX_REG_WRITE_EN, EX_DATA_MEM_WRITE, EX_DATA_MEM_READ, EX_WB_VALUE_SELECT, MEM_PC, MEM_ALU_OUT, MEM_REG_DATA2, MEM_REG_WRITE_ADDR, MEM_REG_WRITE_EN, MEM_DATA_MEM_WRITE, MEM_DATA_MEM_READ, MEM_WB_VALUE_SELECT);
 
 
     /****************************************** TODO: MEM stage ******************************************/
 
+    plus_4_adder PC_ADD(MEM_PC, MEM_PC_PLUS_4);
+
+    assign DATA_MEM_ADDR =  MEM_ALU_OUT;
+    assign DATA_MEM_WRITE_DATA =  MEM_REG_DATA2;
+    assign DATA_MEM_READ =  MEM_DATA_MEM_READ;
+    assign DATA_MEM_WRITE =  MEM_DATA_MEM_WRITE;
 
 
     /****************************************** TODO: MEM / WB ******************************************/
 
+    pr_mem_wb PIPELINE_REG_MEM_WB(CLK, RESET, MEM_PC, MEM_ALU_OUT, DATA_MEM_READ_DATA, MEM_REG_WRITE_ADDR, MEM_REG_WRITE_EN,  MEM_WB_VALUE_SELECT, WB_PC, WB_ALU_OUT, WB_DATA_MEM_READ_DATA, WB_REG_WRITE_ADDR, WB_REG_WRITE_EN, WB_WB_VALUE_SELECT);
 
     /****************************************** TODO: WB stage ******************************************/
 
-
+    mux_4to1_32bit WB_VALUE_SELECT(WB_PC, WB_ALU_OUT, WB_DATA_MEM_READ_DATA, 32'd0, WB_VALUE, WB_WB_VALUE_SELECT);
 
 
     // PC Update
