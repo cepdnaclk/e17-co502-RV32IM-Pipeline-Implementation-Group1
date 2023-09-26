@@ -27,7 +27,7 @@ module reg_file (DATA_IN, DATA_OUT1, DATA_OUT2, IN_ADDR, OUT1_ADDR, OUT2_ADDR, W
     begin
         if (RESET)
             for (i = 0; i < 32; i = i + 1)
-                REGISTERS[i] <= #1 0;       // Write zero to all the registers
+                REGISTERS[i] <= #1 32'd0;       // Write zero to all the registers
         else
             if (WRITE_EN && (IN_ADDR !== 5'd0))     // Register x0 cannot be written to
                 REGISTERS[IN_ADDR] <= #1 DATA_IN;

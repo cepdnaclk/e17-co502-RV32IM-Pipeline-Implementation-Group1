@@ -55,7 +55,7 @@ module branch_control_unit (DATA1, DATA2, SELECT, PC_MUX_OUT);
         end
         else
         begin
-            PC_MUX_OUT = 1'b0;
+            PC_MUX_OUT <= #1 1'b0;
         end
     end
     
