@@ -70,20 +70,41 @@ module cpu (
 
 
     /****************************************** TODO: IF stage ******************************************/
+    //Adder to calculate PC+4
+    plus_4_adder IF_PC_PLUS_4_ADDER (PC, PC_PLUS_4);
 
+    //Mux to select between PC+4 and branch target
+    mux_2to1_32bit BRANCH_SELECT_MUX (PC_PLUS_4, EX_ALU_OUT, PC_NEXT, EX_BJ_SIG);
 
     /****************************************** TODO: IF / ID ******************************************/
-
+    pr_if_id PIPELINE_REG_IF_ID (CLK, RESET, PC, INSTRUCTION, ID_PC, ID_INSTRUCTION);
 
     /****************************************** TODO: ID stage ******************************************/
+    // Control unit 
+    control_unit ID_CONTROL_UNIT (ID_INSTRUCTION, ID_ALU_SELECT, ID_REG_WRITE_EN, ID_DATA_MEM_WRITE, ID_DATA_MEM_READ, ID_BRANCH_CTRL, ID_IMMEDIATE_SELECT, ID_OPERAND1_SELECT, ID_OPERAND2_SELECT, ID_WB_VALUE_SELECT);
 
+    //Register file
+    reg_file ID_REGISTER_FILE (WB_WRITEBACK_VALUE, ID_REG_DATA1, ID_REG_DATA2, WB_REG_WRITE_ADDR, ID_INSTRUCTION[19:15], ID_INSTRUCTION[24:20], WB_REG_WRITE_EN, CLK, RESET);
+
+    //Immediate generation unit
+    immediate_generation_unit ID_IMMEDIATE_GEN_UNIT (ID_INSTRUCTION, ID_IMMEDIATE_SELECT, ID_IMMEDIATE);
 
     /****************************************** TODO: ID / EX ******************************************/
-
+    pr_id_ex PIPELINE_REG_ID_EX (CLK, RESET, ID_PC, ID_REG_DATA1, ID_REG_DATA2, ID_IMMEDIATE, ID_INSTRUCTION[11:7], ID_ALU_SELECT, ID_OPERAND1_SELECT, ID_OPERAND2_SELECT, ID_REG_WRITE_EN, ID_DATA_MEM_WRITE, ID_DATA_MEM_READ, ID_BRANCH_CTRL, ID_WB_VALUE_SELECT, EX_PC, EX_REG_DATA1, EX_REG_DATA2, EX_IMMEDIATE, EX_REG_WRITE_ADDR, EX_ALU_SELECT, EX_OPERAND1_SELECT, EX_OPERAND2_SELECT, EX_REG_WRITE_EN, EX_DATA_MEM_WRITE, EX_DATA_MEM_READ, EX_BRANCH_CTRL, EX_WB_VALUE_SELECT);
 
 
     /****************************************** TODO: EX stage ******************************************/
+    //OP1 select mux
+    mux_2to1_32bit EX_OP1_SELECT_MUX (EX_REG_DATA1, EX_PC, EX_ALU_DATA1, EX_OPERAND1_SELECT);
 
+    //OP2 select mux
+    mux_2to1_32bit EX_OP2_SELECT_MUX (EX_REG_DATA2, EX_IMMEDIATE, EX_ALU_DATA2, EX_OPERAND2_SELECT);
+
+    //ALU 
+    alu EX_ALU (EX_ALU_DATA1, EX_ALU_DATA2, EX_ALU_OUT, EX_ALU_SELECT);
+
+    //Branch control unit
+    branch_control_unit EX_BRANCH_CTRL_UNIT (EX_REG_DATA1, EX_REG_DATA2, EX_BRANCH_CTRL, EX_BJ_SIG);
 
     /****************************************** TODO: EX / MEM ******************************************/
     pr_ex_mem PIPELINE_REG_EX_MEM( CLK, RESET, EX_PC, EX_ALU_OUT, EX_REG_DATA2, EX_REG_WRITE_ADDR, EX_REG_WRITE_EN, EX_DATA_MEM_WRITE, EX_DATA_MEM_READ, EX_WB_VALUE_SELECT, MEM_PC, MEM_ALU_OUT, MEM_REG_DATA2, MEM_REG_WRITE_ADDR, MEM_REG_WRITE_EN, MEM_DATA_MEM_WRITE, MEM_DATA_MEM_READ, MEM_WB_VALUE_SELECT);
