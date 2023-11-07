@@ -174,8 +174,13 @@ module cpu (
 
     /****************************************** TODO: MEM / WB ******************************************/
 
-    pr_mem_wb PIPELINE_REG_MEM_WB(CLK, RESET, MEM_PC, MEM_ALU_OUT, DATA_MEM_READ_DATA, MEM_REG_WRITE_ADDR, MEM_REG_WRITE_EN,  MEM_WB_VALUE_SELECT, WB_PC, WB_ALU_OUT, WB_DATA_MEM_READ_DATA, WB_REG_WRITE_ADDR, WB_REG_WRITE_EN, WB_WB_VALUE_SELECT);
-
+    pr_mem_wb PIPELINE_REG_MEM_WB(CLK, RESET,
+                                 MEM_PC_PLUS_4, MEM_ALU_OUT, DATA_MEM_READ_DATA, 
+                                 MEM_REG_WRITE_ADDR, MEM_REG_WRITE_EN, MEM_DATA_MEM_READ[3], 
+                                 MEM_WB_VALUE_SELECT, WB_PC, WB_ALU_OUT, WB_DATA_MEM_READ_DATA, WB_REG_WRITE_ADDR, 
+                                 WB_REG_WRITE_EN, WB_DATA_MEM_READ, WB_WB_VALUE_SELECT);
+    
+        
     /****************************************** TODO: WB stage ******************************************/
 
     mux_4to1_32bit WB_VALUE_SELECT(WB_PC, WB_ALU_OUT, WB_DATA_MEM_READ_DATA, 32'd0, WB_VALUE, WB_WB_VALUE_SELECT);
