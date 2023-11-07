@@ -8,6 +8,7 @@
 `include "haz_detect_unit/haz_detect_unit.v"
 `include "pr_flush_unit/pr_flush_unit.v"
 `include "forwarding_units/ex_forward_unit.v"
+`include "forwarding_units/mem_forward_unit.v"
 
 `include "pipeline_registers/pr_if_id.v"
 `include "pipeline_registers/pr_id_ex.v"
@@ -53,7 +54,7 @@ module cpu (
     wire [31:0] EX_PC, EX_IMMEDIATE, EX_REG_DATA1, EX_REG_DATA2,
                 EX_ALU_DATA1, EX_ALU_DATA2, EX_ALU_OUT;
     wire [4:0] EX_ALU_SELECT;
-    wire [4:0] EX_REG_WRITE_ADDR;
+    wire [4:0] EX_REG_WRITE_ADDR, EX_REG_READ_ADDR1, EX_REG_READ_ADDR2;
     wire [3:0] EX_DATA_MEM_READ, EX_BRANCH_CTRL;
     wire [2:0] EX_DATA_MEM_WRITE;
     wire [1:0] EX_WB_VALUE_SELECT;
@@ -61,7 +62,7 @@ module cpu (
 
     // MEM
     wire [31:0] MEM_PC, MEM_PC_PLUS_4, MEM_ALU_OUT, MEM_REG_DATA2;
-    wire [4:0] MEM_REG_WRITE_ADDR;
+    wire [4:0] MEM_REG_WRITE_ADDR, MEM_REG_READ_ADDR2;
     wire [3:0] MEM_DATA_MEM_READ;
     wire [2:0] MEM_DATA_MEM_WRITE;
     wire [1:0] MEM_WB_VALUE_SELECT;
@@ -114,7 +115,7 @@ module cpu (
                                     EX_BJ_SIG);
                                     
     /****************************************** TODO: ID / EX ******************************************/
-    pr_id_ex PIPELINE_REG_ID_EX (CLK, (RESET || ID_PR_ID_EX_RESET), ID_PC, ID_REG_DATA1, ID_REG_DATA2, ID_IMMEDIATE, ID_INSTRUCTION[11:7], ID_ALU_SELECT, ID_OPERAND1_SELECT, ID_OPERAND2_SELECT, ID_REG_WRITE_EN, ID_DATA_MEM_WRITE, ID_DATA_MEM_READ, ID_BRANCH_CTRL, ID_WB_VALUE_SELECT, EX_PC, EX_REG_DATA1, EX_REG_DATA2, EX_IMMEDIATE, EX_REG_WRITE_ADDR, EX_ALU_SELECT, EX_OPERAND1_SELECT, EX_OPERAND2_SELECT, EX_REG_WRITE_EN, EX_DATA_MEM_WRITE, EX_DATA_MEM_READ, EX_BRANCH_CTRL, EX_WB_VALUE_SELECT);
+    pr_id_ex PIPELINE_REG_ID_EX (CLK, (RESET || ID_PR_ID_EX_RESET), ID_PC, ID_REG_DATA1, ID_REG_DATA2, ID_IMMEDIATE, ID_INSTRUCTION[11:7], ID_INSTRUCTION[19:15], ID_INSTRUCTION[24:20], ID_ALU_SELECT, ID_OPERAND1_SELECT, ID_OPERAND2_SELECT, ID_REG_WRITE_EN, ID_DATA_MEM_WRITE, ID_DATA_MEM_READ, ID_BRANCH_CTRL, ID_WB_VALUE_SELECT, EX_PC, EX_REG_DATA1, EX_REG_DATA2, EX_IMMEDIATE, EX_REG_WRITE_ADDR, EX_REG_READ_ADDR1, EX_REG_READ_ADDR2, EX_ALU_SELECT, EX_OPERAND1_SELECT, EX_OPERAND2_SELECT, EX_REG_WRITE_EN, EX_DATA_MEM_WRITE, EX_DATA_MEM_READ, EX_BRANCH_CTRL, EX_WB_VALUE_SELECT);
 
     
     /****************************************** TODO: EX stage ******************************************/
@@ -141,17 +142,28 @@ module cpu (
                                 EX_OP1_FWD_SEL, EX_OP2_FWD_SEL);
     
     /****************************************** TODO: EX / MEM ******************************************/
-    pr_ex_mem PIPELINE_REG_EX_MEM( CLK, RESET, EX_PC, EX_ALU_OUT, EX_REG_DATA2, EX_REG_WRITE_ADDR, EX_REG_WRITE_EN, EX_DATA_MEM_WRITE, EX_DATA_MEM_READ, EX_WB_VALUE_SELECT, MEM_PC, MEM_ALU_OUT, MEM_REG_DATA2, MEM_REG_WRITE_ADDR, MEM_REG_WRITE_EN, MEM_DATA_MEM_WRITE, MEM_DATA_MEM_READ, MEM_WB_VALUE_SELECT);
+    pr_ex_mem PIPELINE_REG_EX_MEM( CLK, RESET, 
+                                    EX_PC, EX_ALU_OUT,
+                                    EX_OP2_FWD_MUX_OUT, EX_REG_WRITE_ADDR, EX_REG_WRITE_EN, EX_DATA_MEM_WRITE, EX_DATA_MEM_READ, EX_WB_VALUE_SELECT,
+                                    MEM_PC, MEM_ALU_OUT, MEM_REG_DATA2, MEM_REG_WRITE_ADDR, MEM_REG_WRITE_EN, MEM_DATA_MEM_WRITE, MEM_DATA_MEM_READ, MEM_WB_VALUE_SELECT);
 
 
     /****************************************** TODO: MEM stage ******************************************/
 
     plus_4_adder PC_ADD(MEM_PC, MEM_PC_PLUS_4);
 
+    // Data memort connections
     assign DATA_MEM_ADDR =  MEM_ALU_OUT;
     assign DATA_MEM_WRITE_DATA =  MEM_REG_DATA2;
     assign DATA_MEM_READ =  MEM_DATA_MEM_READ;
     assign DATA_MEM_WRITE =  MEM_DATA_MEM_WRITE;
+
+    // Memory forwarding unit
+    mem_forward_unit MEM_FWD_UNIT(
+        MEM_REG_READ_ADDR2,  MEM_DATA_MEM_WRITE[2],
+        WB_REG_WRITE_ADDR, WB_DATA_MEM_READ_DATA,
+        MEM_WRITE_DATA_FWD_SEL 
+    );
 
 
     /****************************************** TODO: MEM / WB ******************************************/
