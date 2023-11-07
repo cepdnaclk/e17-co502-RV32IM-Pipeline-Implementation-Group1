@@ -152,11 +152,14 @@ module cpu (
 
     plus_4_adder PC_ADD(MEM_PC, MEM_PC_PLUS_4);
 
+    // Write data forwarding MUX
+    mux_2to1_32bit MEM_WRITE_DATA_FWD_MUX (MEM_REG_DATA2, WB_WRITEBACK_VALUE, DATA_MEM_WRITE_DATA, MEM_WRITE_DATA_SEL); 
+    
     // Data memort connections
     assign DATA_MEM_ADDR =  MEM_ALU_OUT;
-    assign DATA_MEM_WRITE_DATA =  MEM_REG_DATA2;
     assign DATA_MEM_READ =  MEM_DATA_MEM_READ;
     assign DATA_MEM_WRITE =  MEM_DATA_MEM_WRITE;
+
 
     // Memory forwarding unit
     mem_forward_unit MEM_FWD_UNIT(
@@ -164,6 +167,9 @@ module cpu (
         WB_REG_WRITE_ADDR, WB_DATA_MEM_READ_DATA,
         MEM_WRITE_DATA_FWD_SEL 
     );
+
+
+    
 
 
     /****************************************** TODO: MEM / WB ******************************************/
