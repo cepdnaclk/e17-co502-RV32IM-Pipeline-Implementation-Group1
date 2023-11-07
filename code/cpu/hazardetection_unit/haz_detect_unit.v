@@ -23,7 +23,8 @@ module haz_detect_unit (
     EX_W_ADDR,
     EX_MEM_READ,
     ID_OP1_SEL,
-    ID_OP2_SEL
+    ID_OP2_SEL,
+    LU_HAZ_SIG
 );
 
     input[4:0]  ID_ADDR1, ID_ADDR2, EX_W_ADDR;
