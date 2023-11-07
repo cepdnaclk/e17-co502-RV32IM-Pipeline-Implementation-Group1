@@ -5,6 +5,8 @@
 `include "control_unit/control_unit.v"
 `include "branch_control_unit/branch_control_unit.v"
 
+`include "haz_detect_unit/haz_detect_unit.v"
+
 `include "pipeline_registers/pr_if_id.v"
 `include "pipeline_registers/pr_id_ex.v"
 `include "pipeline_registers/pr_ex_mem.v"
@@ -93,6 +95,15 @@ module cpu (
     //Immediate generation unit
     immediate_generation_unit ID_IMMEDIATE_GEN_UNIT (ID_INSTRUCTION, ID_IMMEDIATE_SELECT, ID_IMMEDIATE);
 
+    // hazzard detection unit
+    haz_detect_unit ID_HAZ_DETECT_UNIT(ID_INSTRUCTION[19:15],
+                                        ID_INSTRUCTION[24:20],
+                                        EX_REG_WRITE_ADDR,
+                                        EX_DATA_MEM_READ[3],
+                                        ID_OPERAND1_SELECT,
+                                        ID_OPERAND2_SELECT,
+                                        ID_LU_HAZ_SIG
+                                        );
     /****************************************** TODO: ID / EX ******************************************/
     pr_id_ex PIPELINE_REG_ID_EX (CLK, RESET, ID_PC, ID_REG_DATA1, ID_REG_DATA2, ID_IMMEDIATE, ID_INSTRUCTION[11:7], ID_ALU_SELECT, ID_OPERAND1_SELECT, ID_OPERAND2_SELECT, ID_REG_WRITE_EN, ID_DATA_MEM_WRITE, ID_DATA_MEM_READ, ID_BRANCH_CTRL, ID_WB_VALUE_SELECT, EX_PC, EX_REG_DATA1, EX_REG_DATA2, EX_IMMEDIATE, EX_REG_WRITE_ADDR, EX_ALU_SELECT, EX_OPERAND1_SELECT, EX_OPERAND2_SELECT, EX_REG_WRITE_EN, EX_DATA_MEM_WRITE, EX_DATA_MEM_READ, EX_BRANCH_CTRL, EX_WB_VALUE_SELECT);
 
