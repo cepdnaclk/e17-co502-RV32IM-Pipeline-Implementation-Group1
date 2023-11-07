@@ -12,7 +12,7 @@ module pr_if_id (
     ID_PC, ID_INSTRUCTION
 );
 
-    input CLK, RESET;
+    input CLK, RESET, HOLD;
     input [31:0] IF_PC, IF_INSTRUCTION;
     output reg [31:0] ID_PC, ID_INSTRUCTION;
 
