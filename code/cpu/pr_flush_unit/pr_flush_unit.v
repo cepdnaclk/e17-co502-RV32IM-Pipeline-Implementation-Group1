@@ -1,7 +1,7 @@
 
 `timescale 1ns/100ps
 
-module moduleName (
+module pr_flush_unit (
     IF_ID_RES,
     IF_ID_HOLD,
     ID_EX_RES,
