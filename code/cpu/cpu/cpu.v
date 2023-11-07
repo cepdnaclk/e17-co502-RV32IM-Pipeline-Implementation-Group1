@@ -7,6 +7,7 @@
 
 `include "haz_detect_unit/haz_detect_unit.v"
 `include "pr_flush_unit/pr_flush_unit.v"
+`include "forwarding_units/ex_forward_unit.v"
 
 `include "pipeline_registers/pr_if_id.v"
 `include "pipeline_registers/pr_id_ex.v"
@@ -117,18 +118,28 @@ module cpu (
 
     
     /****************************************** TODO: EX stage ******************************************/
-    //OP1 select mux
-    mux_2to1_32bit EX_OP1_SELECT_MUX (EX_REG_DATA1, EX_PC, EX_ALU_DATA1, EX_OPERAND1_SELECT);
+    
+    // ALU operand forwarding muxes
+    mux_4to1_32bit EX_OP1_FWD_MUX(EX_REG_DATA1, MEM_ALU_OUT, WB_WRITEBACK_VALUE,32'd0, EX_OP1_FWD_MUX_OUT, EX_OP1_FWD_SEL);
+    mux_4to1_32bit EX_OP2_FWD_MUX(EX_REG_DATA2, MEM_ALU_OUT , WB_WRITEBACK_VALUE32'd0, EX_OP2_FWD_MUX_OUT, EX_OP2_FWD_SEL);
 
-    //OP2 select mux
-    mux_2to1_32bit EX_OP2_SELECT_MUX (EX_REG_DATA2, EX_IMMEDIATE, EX_ALU_DATA2, EX_OPERAND2_SELECT);
+    
+    //OP1, OP2 select mux
+    mux_2to1_32bit EX_OP1_SELECT_MUX (EX_OP1_FWD_MUX_OUT, EX_PC, EX_ALU_DATA1, EX_OPERAND1_SELECT);
+    mux_2to1_32bit EX_OP2_SELECT_MUX (EX_OP2_FWD_MUX_OUT, EX_IMMEDIATE, EX_ALU_DATA2, EX_OPERAND2_SELECT);
 
     //ALU 
     alu EX_ALU (EX_ALU_DATA1, EX_ALU_DATA2, EX_ALU_OUT, EX_ALU_SELECT);
 
     //Branch control unit
-    branch_control_unit EX_BRANCH_CTRL_UNIT (EX_REG_DATA1, EX_REG_DATA2, EX_BRANCH_CTRL, EX_BJ_SIG);
+    branch_control_unit EX_BRANCH_CTRL_UNIT (EX_OP1_FWD_MUX_OUT, EX_OP2_FWD_MUX_OUT, EX_BRANCH_CTRL, EX_BJ_SIG);
 
+    // EX forward unit
+    ex_forward_unit EX_FWD_UNIT(EX_REG_READ_ADDR1, EX_REG_READ_ADDR2,
+                                MEM_REG_WRITE_ADDR, MEM_W_EN,
+                                WB_REG_WRITE_ADDR, MEM_REG_WRITE_EN,
+                                EX_OP1_FWD_SEL, EX_OP2_FWD_SEL);
+    
     /****************************************** TODO: EX / MEM ******************************************/
     pr_ex_mem PIPELINE_REG_EX_MEM( CLK, RESET, EX_PC, EX_ALU_OUT, EX_REG_DATA2, EX_REG_WRITE_ADDR, EX_REG_WRITE_EN, EX_DATA_MEM_WRITE, EX_DATA_MEM_READ, EX_WB_VALUE_SELECT, MEM_PC, MEM_ALU_OUT, MEM_REG_DATA2, MEM_REG_WRITE_ADDR, MEM_REG_WRITE_EN, MEM_DATA_MEM_WRITE, MEM_DATA_MEM_READ, MEM_WB_VALUE_SELECT);
 
