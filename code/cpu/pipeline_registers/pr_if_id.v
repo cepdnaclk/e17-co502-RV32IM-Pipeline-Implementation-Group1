@@ -7,7 +7,7 @@
 
 
 module pr_if_id (
-    CLK, RESET,
+    CLK, RESET, HOLD,
     IF_PC, IF_INSTRUCTION, 
     ID_PC, ID_INSTRUCTION
 );
@@ -23,7 +23,7 @@ module pr_if_id (
             ID_PC <= #0.1 32'd0;
             ID_INSTRUCTION <= #0.1 32'd0;
         end
-        else
+        else if (HOLD == 1'b0) 
         begin
             ID_PC <= #0.1 IF_PC;
             ID_INSTRUCTION <= #0.1 IF_INSTRUCTION;
