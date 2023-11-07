@@ -34,7 +34,7 @@ module cpu (
 
     /******************* Connection wires *******************/
     // IF
-    wire [31:0] PC_PLUS_4, PC_NEXT;
+    wire [31:0] PC_PLUS_4, PC_SELECT_OUT, PC_NEXT;
 
     // ID
     wire [31:0] ID_PC, ID_INSTRUCTION, ID_REG_DATA1, ID_REG_DATA2, ID_IMMEDIATE;
@@ -42,7 +42,8 @@ module cpu (
     wire [3:0] ID_DATA_MEM_READ, ID_BRANCH_CTRL;
     wire [2:0] ID_DATA_MEM_WRITE, ID_IMMEDIATE_SELECT;
     wire [1:0] ID_WB_VALUE_SELECT;
-    wire ID_REG_WRITE_EN, ID_OPERAND1_SELECT, ID_OPERAND2_SELECT;
+    wire ID_REG_WRITE_EN, ID_OPERAND1_SELECT, ID_OPERAND2_SELECT,
+         ID_LU_HAZ_SIG, ID_PR_IF_ID_RESET, ID_PR_IF_ID_HOLD, ID_PR_EX_RESET;
 
     // EX
     wire [31:0] EX_PC, EX_IMMEDIATE, EX_REG_DATA1, EX_REG_DATA2,
@@ -69,15 +70,18 @@ module cpu (
     wire WB_REG_WRITE_EN;
 
 
-    /****************************************** TODO: IF stage ******************************************/
+    /****************************************** IF stage ******************************************/
     //Adder to calculate PC+4
     plus_4_adder IF_PC_PLUS_4_ADDER (PC, PC_PLUS_4);
 
+    // For load use hazard handling select between PC and PC+4
+    mux_2to1_32bit PC_SELECT_MUX (PC_PLUS_4, PC, PC_SELECT_OUT, ID_LU_HAZ_SIG);
+
     //Mux to select between PC+4 and branch target
-    mux_2to1_32bit BRANCH_SELECT_MUX (PC_PLUS_4, EX_ALU_OUT, PC_NEXT, EX_BJ_SIG);
+    mux_2to1_32bit BRANCH_SELECT_MUX (PC_SELECT_OUT, EX_ALU_OUT, PC_NEXT, EX_BJ_SIG);
 
     /****************************************** TODO: IF / ID ******************************************/
-    pr_if_id PIPELINE_REG_IF_ID (CLK, RESET, PC, INSTRUCTION, ID_PC, ID_INSTRUCTION);
+    pr_if_id PIPELINE_REG_IF_ID (CLK, (RESET || ID_PR_IF_ID_RESET),ID_PR_IF_ID_HOLD, PC, INSTRUCTION, ID_PC, ID_INSTRUCTION);
 
     /****************************************** TODO: ID stage ******************************************/
     // Control unit 
