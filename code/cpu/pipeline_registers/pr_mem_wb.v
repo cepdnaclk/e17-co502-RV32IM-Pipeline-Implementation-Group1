@@ -22,14 +22,12 @@ module pr_mem_wb (
 
     input [31:0] MEM_PC, MEM_ALU_OUT, MEM_DATA_MEM_READ_DATA;
     input [4:0] MEM_REG_WRITE_ADDR;
-    input MEM_REG_WRITE_EN;
-    input MEM_DATA_MEM_READ;
+    input MEM_REG_WRITE_EN, MEM_DATA_MEM_READ;
     input [1:0] MEM_WB_VALUE_SELECT;
 
     output reg [31:0] WB_PC, WB_ALU_OUT, WB_DATA_MEM_READ_DATA;
     output reg [4:0] WB_REG_WRITE_ADDR;
-    output reg WB_REG_WRITE_EN;
-    output reg WB_DATA_MEM_READ;
+    output reg WB_REG_WRITE_EN, WB_DATA_MEM_READ;
     output reg [1:0] WB_WB_VALUE_SELECT;
 
     always @ (posedge CLK)

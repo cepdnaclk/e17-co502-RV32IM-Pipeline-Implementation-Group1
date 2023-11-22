@@ -23,7 +23,7 @@ module pr_if_id (
             ID_PC <= #0.1 32'd0;
             ID_INSTRUCTION <= #0.1 32'd0;
         end
-        else if (HOLD == 1'b0) 
+        else if (HOLD == 1'b0)      // Don't update if HOLD signal is asserted
         begin
             ID_PC <= #0.1 IF_PC;
             ID_INSTRUCTION <= #0.1 IF_INSTRUCTION;
